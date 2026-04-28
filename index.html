@@ -321,35 +321,20 @@
   .settings-bar {
     background: #fff;
     border-bottom: 1px solid #eee;
-    padding: 10px 12px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 0.78rem;
-    color: #888;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: #aaa;
   }
-  .settings-url {
-    flex: 1;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 6px 10px;
-    font-size: 0.75rem;
-    font-family: monospace;
-    color: var(--dark);
-    outline: none;
-    background: #fafafa;
+  .settings-indicator {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
   }
-  .settings-url:focus { border-color: var(--green); }
-  .save-url-btn {
-    background: var(--green);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 6px 12px;
-    font-size: 0.75rem;
-    font-weight: 700;
-    cursor: pointer;
-  }
+  .settings-indicator.ok { background: #2D6A4F; }
+  .settings-indicator.warn { background: #C0392B; }
 
   /* Section header */
   .section-label {
@@ -377,11 +362,10 @@
   </button>
 </header>
 
-<!-- GOOGLE SCRIPT URL SETTINGS -->
+<!-- SCRIPT STATUS -->
 <div class="settings-bar">
-  <span>URL Script:</span>
-  <input type="url" class="settings-url" id="scriptUrl" placeholder="https://script.google.com/macros/s/.../exec" />
-  <button class="save-url-btn" onclick="saveScriptUrl()">Guardar</button>
+  <div class="settings-indicator ok" id="scriptIndicator"></div>
+  <span id="scriptStatus">Google Sheets conectado ✓</span>
 </div>
 
 <!-- TABS -->
@@ -508,7 +492,9 @@ let cart = [];
 let currentProduct = null;
 
 const STORAGE_KEY = 'aryscafe_cart';
-const SCRIPT_URL_KEY = 'aryscafe_script_url';
+
+// ── CAMBIA AQUÍ TU URL DE GOOGLE APPS SCRIPT ──────────
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbyrDWKb3bNDrv4kbsyga0SO1QyZqyDRYbrKuzXr3NdQi9BO1JKyReAgEPcksq1nqc_I/exec';
 
 // ── PERSISTENCE ────────────────────────────────────────
 function saveCart() {
@@ -519,15 +505,6 @@ function loadCart() {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) cart = JSON.parse(saved);
   } catch(e) { cart = []; }
-}
-function loadScriptUrl() {
-  const url = localStorage.getItem(SCRIPT_URL_KEY) || '';
-  document.getElementById('scriptUrl').value = url;
-}
-function saveScriptUrl() {
-  const url = document.getElementById('scriptUrl').value.trim();
-  localStorage.setItem(SCRIPT_URL_KEY, url);
-  showToast('URL guardada ✓', 'success');
 }
 
 // ── TABS ───────────────────────────────────────────────
@@ -670,10 +647,9 @@ function closeCart() { document.getElementById('cartPanel').classList.remove('op
 
 // ── CONFIRM ORDER ──────────────────────────────────────
 async function confirmOrder() {
-  const scriptUrl = localStorage.getItem('https://script.google.com/macros/s/AKfycbyrDWKb3bNDrv4kbsyga0SO1QyZqyDRYbrKuzXr3NdQi9BO1JKyReAgEPcksq1nqc_I/exec') || '';
+  const scriptUrl = SCRIPT_URL;
   if (!scriptUrl) {
-    showToast('⚠️ Configura la URL del Script primero', 'error');
-    closeCart();
+    showToast('⚠️ URL del Script no configurada', 'error');
     return;
   }
   if (cart.length === 0) return;
@@ -727,7 +703,6 @@ function showToast(msg, type = '') {
 
 // ── INIT ───────────────────────────────────────────────
 loadCart();
-loadScriptUrl();
 updateCartUI();
 </script>
 
