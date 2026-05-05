@@ -739,7 +739,7 @@ async function confirmOrder() {
   btn.classList.add('loading');
   btn.textContent = '⏳ Enviando...';
 
-  const timestamp = new Date().toISOString();
+  const timestamp = new Date().toLocaleDateString('es-SV', { timeZone: 'America/El_Salvador', year: 'numeric', month: '2-digit', day: '2-digit' });
   const rows = cart.map(item => ({
     Timestamp: timestamp,
     Producto: item.product,
