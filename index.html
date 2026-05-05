@@ -127,7 +127,8 @@
   }
   .product-card:active { transform: scale(0.96); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
   .product-card.dessert { border-color: #E8D5A3; }
-  .product-card:not(.dessert) { border-color: #C8E6D0; }
+  .product-card.frappe { border-color: #B3D4F5; }
+  .product-card:not(.dessert):not(.frappe) { border-color: #C8E6D0; }
 
   .product-emoji { font-size: 2.2rem; line-height: 1; }
   .product-name { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; text-align: center; color: var(--dark); line-height: 1.2; }
@@ -145,6 +146,7 @@
     text-transform: uppercase;
   }
   .product-badge.dessert-badge { background: var(--gold); color: var(--dark); }
+  .product-badge.frappe-badge { background: #4A90C4; color: #fff; }
 
   /* Variant modal */
   .modal-overlay {
@@ -172,6 +174,36 @@
   .modal-title { font-family: 'Syne', sans-serif; font-size: 1.4rem; font-weight: 800; margin-bottom: 6px; }
   .modal-subtitle { font-size: 0.82rem; color: #777; margin-bottom: 20px; }
 
+  /* Quantity selector in modal */
+  .modal-qty-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    margin-bottom: 18px;
+  }
+  .modal-qty-btn {
+    width: 42px; height: 42px;
+    border-radius: 10px;
+    border: none;
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.1s;
+  }
+  .modal-qty-btn.minus { background: #F0EAE0; color: var(--dark); }
+  .modal-qty-btn.minus:active { background: var(--red); color: #fff; }
+  .modal-qty-btn.plus { background: var(--green); color: #fff; }
+  .modal-qty-btn.plus:active { background: var(--green-light); }
+  .modal-qty-num {
+    font-family: 'Syne', sans-serif;
+    font-weight: 800;
+    font-size: 1.4rem;
+    min-width: 52px;
+    text-align: center;
+  }
+
   .variant-btn {
     width: 100%;
     padding: 16px;
@@ -194,6 +226,8 @@
   .variant-btn.instantaneo:active { background: var(--green); color: #fff; }
   .variant-btn.solo { border-color: var(--gold); color: var(--dark); }
   .variant-btn.solo:active { background: var(--gold); }
+  .variant-btn.frappe-variant { border-color: #4A90C4; color: #2a5f8a; }
+  .variant-btn.frappe-variant:active { background: #4A90C4; color: #fff; }
   .variant-price { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; }
 
   /* Cart panel */
@@ -372,6 +406,7 @@
 <div class="tabs">
   <button class="tab-btn active" onclick="switchTab('frias', this)">❄️ Frías</button>
   <button class="tab-btn" onclick="switchTab('calientes', this)">🔥 Calientes</button>
+  <button class="tab-btn" onclick="switchTab('frappes', this)">🧋 Frappes</button>
   <button class="tab-btn" onclick="switchTab('postres', this)">🍩 Postres</button>
 </div>
 
@@ -407,13 +442,31 @@
       <span class="product-badge">Bebida</span>
       <div class="product-emoji">☕</div>
       <div class="product-name">Capuchino Caliente</div>
-      <div class="product-price">Esp $3 · Inst $2</div>
+      <div class="product-price">Esp $2</div>
     </div>
     <div class="product-card" onclick="openVariant('Café Instantáneo','drink')">
       <span class="product-badge">Bebida</span>
       <div class="product-emoji">🫖</div>
       <div class="product-name">Café Instantáneo</div>
       <div class="product-price">Inst $0.35</div>
+    </div>
+  </div>
+</div>
+
+<div id="section-frappes" style="display:none">
+  <div class="section-label">Frappes</div>
+  <div class="product-grid">
+    <div class="product-card frappe" onclick="openVariant('Frappe Latte','frappe')">
+      <span class="product-badge frappe-badge">Frappe</span>
+      <div class="product-emoji">🧋</div>
+      <div class="product-name">Frappe Latte</div>
+      <div class="product-price">$3.00</div>
+    </div>
+    <div class="product-card frappe" onclick="openVariant('Caramel Frappe','frappe')">
+      <span class="product-badge frappe-badge">Frappe</span>
+      <div class="product-emoji">🍮</div>
+      <div class="product-name">Caramel Frappe</div>
+      <div class="product-price">$3.00</div>
     </div>
   </div>
 </div>
@@ -442,6 +495,14 @@
     <div class="modal-handle"></div>
     <div class="modal-title" id="modalProductName">Producto</div>
     <div class="modal-subtitle" id="modalSubtitle">Elige la variante</div>
+
+    <!-- Quantity selector -->
+    <div class="modal-qty-row">
+      <button class="modal-qty-btn minus" onclick="changeModalQty(-1)">−</button>
+      <span class="modal-qty-num" id="modalQtyNum">1</span>
+      <button class="modal-qty-btn plus" onclick="changeModalQty(1)">+</button>
+    </div>
+
     <div id="variantButtons"></div>
   </div>
 </div>
@@ -481,8 +542,10 @@ const MENU = {
   'Latte Frío':          { type:'drink', espresso:3,    instantaneo:2 },
   'Caramel Macchiato':   { type:'drink', espresso:3,    instantaneo:2 },
   'Capuchino Frío':      { type:'drink', espresso:3,    instantaneo:2 },
-  'Capuchino Caliente':  { type:'drink', espresso:3,    instantaneo:2 },
+  'Capuchino Caliente':  { type:'drink', espresso:2,    instantaneo:null },
   'Café Instantáneo':    { type:'drink', espresso:null, instantaneo:0.35 },
+  'Frappe Latte':        { type:'frappe', price:3.00 },
+  'Caramel Frappe':      { type:'frappe', price:3.00 },
   'Donas':               { type:'dessert', price:1.00 },
   'Pan de Banano':       { type:'dessert', price:0.75 },
 };
@@ -490,6 +553,7 @@ const MENU = {
 // ── STATE ──────────────────────────────────────────────
 let cart = [];
 let currentProduct = null;
+let modalQty = 1;
 
 const STORAGE_KEY = 'aryscafe_cart';
 
@@ -509,16 +573,24 @@ function loadCart() {
 
 // ── TABS ───────────────────────────────────────────────
 function switchTab(section, btn) {
-  ['frias','calientes','postres'].forEach(s => {
+  ['frias','calientes','frappes','postres'].forEach(s => {
     document.getElementById('section-' + s).style.display = s === section ? '' : 'none';
   });
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
 }
 
+// ── MODAL QUANTITY ─────────────────────────────────────
+function changeModalQty(delta) {
+  modalQty = Math.max(1, modalQty + delta);
+  document.getElementById('modalQtyNum').textContent = modalQty;
+}
+
 // ── VARIANT MODAL ──────────────────────────────────────
 function openVariant(name, type) {
   currentProduct = name;
+  modalQty = 1;
+  document.getElementById('modalQtyNum').textContent = '1';
   const item = MENU[name];
   document.getElementById('modalProductName').textContent = name;
 
@@ -526,10 +598,17 @@ function openVariant(name, type) {
   btns.innerHTML = '';
 
   if (type === 'dessert') {
-    document.getElementById('modalSubtitle').textContent = `$${item.price.toFixed(2)} · Toca para agregar`;
+    document.getElementById('modalSubtitle').textContent = `$${item.price.toFixed(2)} · Elige cantidad y agrega`;
     btns.innerHTML = `
       <button class="variant-btn solo" onclick="addToCart('${name}','Unidad',${item.price})">
         <span>Agregar al carrito</span>
+        <span class="variant-price">$${item.price.toFixed(2)}</span>
+      </button>`;
+  } else if (type === 'frappe') {
+    document.getElementById('modalSubtitle').textContent = `$${item.price.toFixed(2)} · Elige cantidad y agrega`;
+    btns.innerHTML = `
+      <button class="variant-btn frappe-variant" onclick="addToCart('${name}','Frappe',${item.price})">
+        <span>🧋 Agregar al carrito</span>
         <span class="variant-price">$${item.price.toFixed(2)}</span>
       </button>`;
   } else {
@@ -562,18 +641,20 @@ function closeVariantOnOverlay(e) {
 
 // ── CART LOGIC ─────────────────────────────────────────
 function addToCart(product, variant, price) {
+  const qty = modalQty;
   closeVariantModal();
   const key = product + '|' + variant;
   const existing = cart.find(i => i.key === key);
   if (existing) {
-    existing.qty++;
+    existing.qty += qty;
   } else {
-    cart.push({ key, product, variant, price, qty: 1 });
+    cart.push({ key, product, variant, price, qty });
   }
   saveCart();
   updateCartUI();
   animateCartBadge();
-  showToast(`${product} agregado ✓`, 'success');
+  const label = qty > 1 ? `${qty}x ${product} agregados ✓` : `${product} agregado ✓`;
+  showToast(label, 'success');
 }
 
 function updateQty(key, delta) {
@@ -606,7 +687,6 @@ function updateCartUI() {
   const empty = document.getElementById('cartEmpty');
   const itemsEl = document.getElementById('cartItems');
 
-  // Remove old cart items (keep empty div)
   Array.from(itemsEl.children).forEach(c => { if (c.id !== 'cartEmpty') c.remove(); });
 
   if (cart.length === 0) {
@@ -676,7 +756,6 @@ async function confirmOrder() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ pedido: rows })
     });
-    // no-cors → assume success if no network error
     cart = [];
     saveCart();
     updateCartUI();
@@ -705,51 +784,6 @@ function showToast(msg, type = '') {
 loadCart();
 updateCartUI();
 </script>
-
-<!-- =====================================================
-     GOOGLE APPS SCRIPT (doPost) — pega esto en tu proyecto
-     de Apps Script en script.google.com
-     =====================================================
-
-function doPost(e) {
-  try {
-    var sheet = SpreadsheetApp.getActiveSpreadsheet()
-                              .getSheetByName("Ventas");
-    if (!sheet) {
-      sheet = SpreadsheetApp.getActiveSpreadsheet()
-                            .insertSheet("Ventas");
-      sheet.appendRow([
-        "Timestamp","Producto","Variante",
-        "Cantidad","Precio Unitario","Total"
-      ]);
-    }
-
-    var data = JSON.parse(e.postData.contents);
-    var rows = data.pedido;
-
-    rows.forEach(function(row) {
-      sheet.appendRow([
-        row.Timestamp,
-        row.Producto,
-        row.Variante,
-        row.Cantidad,
-        row["Precio Unitario"],
-        row.Total
-      ]);
-    });
-
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "ok" }))
-      .setMimeType(ContentService.MimeType.JSON);
-
-  } catch(err) {
-    return ContentService
-      .createTextOutput(JSON.stringify({ status: "error", message: err.toString() }))
-      .setMimeType(ContentService.MimeType.JSON);
-  }
-}
-
-===================================================== -->
 
 </body>
 </html>
