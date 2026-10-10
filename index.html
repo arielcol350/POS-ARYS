@@ -79,10 +79,12 @@
   @keyframes pop { 0%,100%{transform:scale(1)} 50%{transform:scale(1.5)} }
 
   /* Tabs */
-  .tabs { display: flex; gap: 0; background: var(--dark); overflow: hidden; }
+  .tabs { display: flex; gap: 0; background: var(--dark); overflow-x: auto; scrollbar-width: none; }
+  .tabs::-webkit-scrollbar { display: none; }
   .tab-btn {
-    flex: 1;
-    padding: 12px 4px;
+    flex: 1 0 auto;
+    white-space: nowrap;
+    padding: 12px 12px;
     border: none;
     background: transparent;
     color: rgba(255,255,255,0.45);
@@ -128,7 +130,10 @@
   .product-card:active { transform: scale(0.96); box-shadow: 0 1px 4px rgba(0,0,0,0.1); }
   .product-card.dessert { border-color: #E8D5A3; }
   .product-card.frappe { border-color: #B3D4F5; }
-  .product-card:not(.dessert):not(.frappe) { border-color: #C8E6D0; }
+  .product-card:not(.dessert):not(.frappe):not(.milkshake):not(.matcha):not(.refresher) { border-color: #C8E6D0; }
+  .product-card.milkshake { border-color: #F5C6D6; }
+  .product-card.matcha { border-color: #C5DDA0; }
+  .product-card.refresher { border-color: #F7D0A8; }
 
   .product-emoji { font-size: 2.2rem; line-height: 1; }
   .product-name { font-family: 'Syne', sans-serif; font-size: 0.88rem; font-weight: 700; text-align: center; color: var(--dark); line-height: 1.2; }
@@ -147,6 +152,9 @@
   }
   .product-badge.dessert-badge { background: var(--gold); color: var(--dark); }
   .product-badge.frappe-badge { background: #4A90C4; color: #fff; }
+  .product-badge.milkshake-badge { background: #D9739A; color: #fff; }
+  .product-badge.matcha-badge { background: #6B8E23; color: #fff; }
+  .product-badge.refresher-badge { background: #E8833A; color: #fff; }
 
   /* Variant modal */
   .modal-overlay {
@@ -228,6 +236,12 @@
   .variant-btn.solo:active { background: var(--gold); }
   .variant-btn.frappe-variant { border-color: #4A90C4; color: #2a5f8a; }
   .variant-btn.frappe-variant:active { background: #4A90C4; color: #fff; }
+  .variant-btn.milkshake-variant { border-color: #D9739A; color: #A8456D; }
+  .variant-btn.milkshake-variant:active { background: #D9739A; color: #fff; }
+  .variant-btn.matcha-variant { border-color: #6B8E23; color: #4A6316; }
+  .variant-btn.matcha-variant:active { background: #6B8E23; color: #fff; }
+  .variant-btn.refresher-variant { border-color: #E8833A; color: #B35A17; }
+  .variant-btn.refresher-variant:active { background: #E8833A; color: #fff; }
   .variant-price { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 800; }
 
   /* Cart panel */
@@ -407,6 +421,9 @@
   <button class="tab-btn active" onclick="switchTab('frias', this)">❄️ Frías</button>
   <button class="tab-btn" onclick="switchTab('calientes', this)">🔥 Calientes</button>
   <button class="tab-btn" onclick="switchTab('frappes', this)">🧋 Frappes</button>
+  <button class="tab-btn" onclick="switchTab('milkshakes', this)">🥤 MilkShakes</button>
+  <button class="tab-btn" onclick="switchTab('matcha', this)">🍵 Matcha</button>
+  <button class="tab-btn" onclick="switchTab('refreshers', this)">🍹 Refreshers</button>
   <button class="tab-btn" onclick="switchTab('postres', this)">🍩 Postres</button>
 </div>
 
@@ -432,6 +449,36 @@
       <div class="product-name">Capuchino Frío</div>
       <div class="product-price">Esp $3 · Inst $2</div>
     </div>
+    <div class="product-card" onclick="openVariant('Americano Frío','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">☕</div>
+      <div class="product-name">Americano Frío</div>
+      <div class="product-price">$2.00</div>
+    </div>
+    <div class="product-card" onclick="openVariant('Spanish Latte','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">🥛</div>
+      <div class="product-name">Spanish Latte</div>
+      <div class="product-price">$3.00</div>
+    </div>
+    <div class="product-card" onclick="openVariant('Mocha Frío','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">🍫</div>
+      <div class="product-name">Mocha Frío</div>
+      <div class="product-price">$3.50</div>
+    </div>
+    <div class="product-card" onclick="openVariant('Orange Espresso','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">🍊</div>
+      <div class="product-name">Orange Espresso</div>
+      <div class="product-price">$3.50</div>
+    </div>
+    <div class="product-card" onclick="openVariant('Affogato','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">🍨</div>
+      <div class="product-name">Affogato</div>
+      <div class="product-price">$3.50</div>
+    </div>
   </div>
 </div>
 
@@ -450,6 +497,30 @@
       <div class="product-name">Café Instantáneo</div>
       <div class="product-price">Inst $0.35</div>
     </div>
+    <div class="product-card" onclick="openVariant('Americano Caliente','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">☕</div>
+      <div class="product-name">Americano Caliente</div>
+      <div class="product-price">$2.00</div>
+    </div>
+    <div class="product-card" onclick="openVariant('Latte Caliente','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">🥛</div>
+      <div class="product-name">Latte Caliente</div>
+      <div class="product-price">$3.00</div>
+    </div>
+    <div class="product-card" onclick="openVariant('Mocha Caliente','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">🍫</div>
+      <div class="product-name">Mocha Caliente</div>
+      <div class="product-price">8oz $3 · 12oz $3.50</div>
+    </div>
+    <div class="product-card" onclick="openVariant('Caramel Macchiato Caliente','drink')">
+      <span class="product-badge">Bebida</span>
+      <div class="product-emoji">🍮</div>
+      <div class="product-name">Caramel Macchiato Caliente</div>
+      <div class="product-price">8oz $2.50 · 12oz $3.50</div>
+    </div>
   </div>
 </div>
 
@@ -467,6 +538,84 @@
       <div class="product-emoji">🍮</div>
       <div class="product-name">Caramel Frappe</div>
       <div class="product-price">$3.00</div>
+    </div>
+    <div class="product-card frappe" onclick="openVariant('Mocha Frappe','frappe')">
+      <span class="product-badge frappe-badge">Frappe</span>
+      <div class="product-emoji">🍫</div>
+      <div class="product-name">Mocha Frappe</div>
+      <div class="product-price">$3.50</div>
+    </div>
+  </div>
+</div>
+
+<div id="section-milkshakes" style="display:none">
+  <div class="section-label">MilkShakes</div>
+  <div class="product-grid">
+    <div class="product-card milkshake" onclick="openVariant('Milkshake Fresa','milkshake')">
+      <span class="product-badge milkshake-badge">Milkshake</span>
+      <div class="product-emoji">🍓</div>
+      <div class="product-name">Milkshake Fresa</div>
+      <div class="product-price">$4.25</div>
+    </div>
+    <div class="product-card milkshake" onclick="openVariant('Milkshake Vainilla','milkshake')">
+      <span class="product-badge milkshake-badge">Milkshake</span>
+      <div class="product-emoji">🍦</div>
+      <div class="product-name">Milkshake Vainilla</div>
+      <div class="product-price">$4.25</div>
+    </div>
+    <div class="product-card milkshake" onclick="openVariant('Milkshake Chocolate','milkshake')">
+      <span class="product-badge milkshake-badge">Milkshake</span>
+      <div class="product-emoji">🍫</div>
+      <div class="product-name">Milkshake Chocolate</div>
+      <div class="product-price">$4.25</div>
+    </div>
+  </div>
+</div>
+
+<div id="section-matcha" style="display:none">
+  <div class="section-label">Matcha</div>
+  <div class="product-grid">
+    <div class="product-card matcha" onclick="openVariant('Matcha Latte','matcha')">
+      <span class="product-badge matcha-badge">Matcha</span>
+      <div class="product-emoji">🍵</div>
+      <div class="product-name">Matcha Latte</div>
+      <div class="product-price">$6.00</div>
+    </div>
+    <div class="product-card matcha" onclick="openVariant('Strawberry Matcha','matcha')">
+      <span class="product-badge matcha-badge">Matcha</span>
+      <div class="product-emoji">🍓</div>
+      <div class="product-name">Strawberry Matcha</div>
+      <div class="product-price">$7.00</div>
+    </div>
+    <div class="product-card matcha" onclick="openVariant('Banana Matcha','matcha')">
+      <span class="product-badge matcha-badge">Matcha</span>
+      <div class="product-emoji">🍌</div>
+      <div class="product-name">Banana Matcha</div>
+      <div class="product-price">$7.00</div>
+    </div>
+  </div>
+</div>
+
+<div id="section-refreshers" style="display:none">
+  <div class="section-label">Refreshers</div>
+  <div class="product-grid">
+    <div class="product-card refresher" onclick="openVariant('Passion Breeze','refresher')">
+      <span class="product-badge refresher-badge">Refresher</span>
+      <div class="product-emoji">🍹</div>
+      <div class="product-name">Passion Breeze</div>
+      <div class="product-price">$3.50</div>
+    </div>
+    <div class="product-card refresher" onclick="openVariant('Arys Berry','refresher')">
+      <span class="product-badge refresher-badge">Refresher</span>
+      <div class="product-emoji">🫐</div>
+      <div class="product-name">Arys Berry</div>
+      <div class="product-price">$3.50</div>
+    </div>
+    <div class="product-card refresher" onclick="openVariant('Orange Lemon','refresher')">
+      <span class="product-badge refresher-badge">Refresher</span>
+      <div class="product-emoji">🍊</div>
+      <div class="product-name">Orange Lemon</div>
+      <div class="product-price">$3.50</div>
     </div>
   </div>
 </div>
@@ -548,6 +697,25 @@ const MENU = {
   'Caramel Frappe':      { type:'frappe', price:3.00 },
   'Donas':               { type:'dessert', price:1.00 },
   'Pan de Banano':       { type:'dessert', price:0.50 },
+  'Americano Frío': { type:'drink', options:[{label:'Único', price:2}] },
+  'Spanish Latte': { type:'drink', options:[{label:'Único', price:3}] },
+  'Mocha Frío': { type:'drink', options:[{label:'Único', price:3.5}] },
+  'Orange Espresso': { type:'drink', options:[{label:'Único', price:3.5}] },
+  'Affogato': { type:'drink', options:[{label:'Único', price:3.5}] },
+  'Americano Caliente': { type:'drink', options:[{label:'Único', price:2}] },
+  'Latte Caliente': { type:'drink', options:[{label:'Único', price:3}] },
+  'Mocha Caliente': { type:'drink', options:[{label:'8 oz', price:3}, {label:'12 oz', price:3.5}] },
+  'Caramel Macchiato Caliente': { type:'drink', options:[{label:'8 oz', price:2.5}, {label:'12 oz', price:3.5}] },
+  'Mocha Frappe':        { type:'frappe', price:3.50 },
+  'Milkshake Fresa': { type:'milkshake', options:[{label:'Único', price:4.25}] },
+  'Milkshake Vainilla': { type:'milkshake', options:[{label:'Único', price:4.25}] },
+  'Milkshake Chocolate': { type:'milkshake', options:[{label:'Único', price:4.25}] },
+  'Matcha Latte': { type:'matcha', options:[{label:'Único', price:6}] },
+  'Strawberry Matcha': { type:'matcha', options:[{label:'Único', price:7}] },
+  'Banana Matcha': { type:'matcha', options:[{label:'Único', price:7}] },
+  'Passion Breeze': { type:'refresher', options:[{label:'Único', price:3.5}] },
+  'Arys Berry': { type:'refresher', options:[{label:'Único', price:3.5}] },
+  'Orange Lemon': { type:'refresher', options:[{label:'Único', price:3.5}] },
 };
 
 // ── STATE ──────────────────────────────────────────────
@@ -573,11 +741,12 @@ function loadCart() {
 
 // ── TABS ───────────────────────────────────────────────
 function switchTab(section, btn) {
-  ['frias','calientes','frappes','postres'].forEach(s => {
+  ['frias','calientes','frappes','milkshakes','matcha','refreshers','postres'].forEach(s => {
     document.getElementById('section-' + s).style.display = s === section ? '' : 'none';
   });
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
+  btn.scrollIntoView({ inline: 'center', block: 'nearest', behavior: 'smooth' });
 }
 
 // ── MODAL QUANTITY ─────────────────────────────────────
@@ -597,7 +766,20 @@ function openVariant(name, type) {
   const btns = document.getElementById('variantButtons');
   btns.innerHTML = '';
 
-  if (type === 'dessert') {
+  if (item.options) {
+    const cls = { drink:'espresso', milkshake:'milkshake-variant', matcha:'matcha-variant', refresher:'refresher-variant' }[item.type] || 'solo';
+    const single = item.options.length === 1;
+    document.getElementById('modalSubtitle').textContent = single
+      ? `$${item.options[0].price.toFixed(2)} · Elige cantidad y agrega`
+      : 'Elige el tamaño';
+    item.options.forEach(opt => {
+      btns.innerHTML += `
+        <button class="variant-btn ${cls}" onclick="addToCart('${name}','${opt.label}',${opt.price})">
+          <span>${single ? 'Agregar al carrito' : opt.label}</span>
+          <span class="variant-price">$${opt.price.toFixed(2)}</span>
+        </button>`;
+    });
+  } else if (type === 'dessert') {
     document.getElementById('modalSubtitle').textContent = `$${item.price.toFixed(2)} · Elige cantidad y agrega`;
     btns.innerHTML = `
       <button class="variant-btn solo" onclick="addToCart('${name}','Unidad',${item.price})">
