@@ -635,6 +635,44 @@
       <div class="product-name">Pan de Banano</div>
       <div class="product-price">$0.75 / porción</div>
     </div>
+    <div class="product-card dessert" onclick="openVariant('Muffin','dessert')">
+      <span class="product-badge dessert-badge">Postre</span>
+      <div class="product-emoji">🧁</div>
+      <div class="product-name">Muffin</div>
+      <div class="product-price">$1.00 c/u</div>
+    </div>
+  </div>
+
+  <div class="section-label">Extras</div>
+  <div class="product-grid">
+    <div class="product-card dessert" onclick="openVariant('Scoop de Proteina','dessert')">
+      <span class="product-badge dessert-badge">Extra</span>
+      <div class="product-emoji">💪</div>
+      <div class="product-name">Scoop de Proteina</div>
+      <div class="product-price">$1.50</div>
+    </div>
+    <div class="product-card dessert" onclick="openVariant('Shot Extra','dessert')">
+      <span class="product-badge dessert-badge">Extra</span>
+      <div class="product-emoji">☕</div>
+      <div class="product-name">Shot Extra</div>
+      <div class="product-price">$0.50</div>
+    </div>
+  </div>
+
+  <div class="section-label">Family &amp; Friends</div>
+  <div class="product-grid">
+    <div class="product-card dessert" onclick="openVariant('Family &amp; Friends - Grande','dessert')">
+      <span class="product-badge dessert-badge">F&amp;F</span>
+      <div class="product-emoji">🍰</div>
+      <div class="product-name">Grande</div>
+      <div class="product-price">$2.00</div>
+    </div>
+    <div class="product-card dessert" onclick="openVariant('Family &amp; Friends - Pequeño','dessert')">
+      <span class="product-badge dessert-badge">F&amp;F</span>
+      <div class="product-emoji">🧁</div>
+      <div class="product-name">Pequeño</div>
+      <div class="product-price">$1.50</div>
+    </div>
   </div>
 </div>
 
@@ -697,6 +735,11 @@ const MENU = {
   'Caramel Frappe':      { type:'frappe', price:3.00 },
   'Donas':               { type:'dessert', price:1.00 },
   'Pan de Banano':       { type:'dessert', price:0.75 },
+  'Muffin':              { type:'dessert', price:1.00 },
+  'Scoop de Proteina':   { type:'dessert', price:1.50 },
+  'Shot Extra':          { type:'dessert', price:0.50 },
+  'Family & Friends - Grande':  { type:'dessert', price:2.00 },
+  'Family & Friends - Pequeño': { type:'dessert', price:1.50 },
   'Americano Frío': { type:'drink', options:[{label:'Único', price:2}] },
   'Spanish Latte': { type:'drink', options:[{label:'Único', price:3}] },
   'Mocha Frío': { type:'drink', options:[{label:'Único', price:3.5}] },
